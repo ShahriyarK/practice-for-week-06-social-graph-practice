@@ -51,7 +51,29 @@ class SocialNetwork {
   }
 
   getRecommendedFollows(userID, degrees) {
-    // Your code here
+    const queue = [[userID]];
+    const visited = new Set();
+    const recommendedFollows = [];
+
+    while (queue.length > 0) {
+      const currentPath = queue.shift();
+      const currentUser = currentPath[currentPath.length - 1];
+      if (!visited.has(currentUser)) {
+        visited.add(currentUser);
+        // the condition below can be handled in a more readable manner by keeping
+        // track of degree in a map and then comparing current degree with the target
+        // degree in each iteration
+        if (currentPath.length > 2 && currentPath.length <= degrees + 2) {
+          recommendedFollows.push(currentUser);
+        }
+        const neighbors = this.follows[currentUser];
+        for (const neighbor of neighbors) {
+          const newPath = [...currentPath, neighbor];
+          queue.push(newPath);
+        }
+      }
+    }
+    return recommendedFollows;
   }
 }
 
